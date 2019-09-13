@@ -1,0 +1,291 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "PIG - TVG - Comercialização API - Breaks",
+        "version": "1.0.0",
+        "description": "Endpoint para atender as necessidades de recebimento de grade com breaks do projeto integração de grades."
+    },
+    "paths": {
+        "/grades": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Grade"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "COMERCIAL"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "O servidor completou a solicitação, mas não é necessária nenhuma mensagem de retorno."
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Info"
+                                }
+                            }
+                        },
+                        "description": "A requisição foi mal formada e precisa ser reescrita"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Info"
+                                }
+                            }
+                        },
+                        "description": "O acesso a URL solicitada só poderá ser realizado após autenticação"
+                    },
+                    "405": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Info"
+                                }
+                            }
+                        },
+                        "description": "O método HTTP utilizado não é permitido para o recurso"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Info"
+                                }
+                            }
+                        },
+                        "description": "O servidor não pode processar a requisição devido a um erro inesperado"
+                    }
+                },
+                "summary": "Envio da grade com breaks",
+                "description": "Envio da grade com breaks"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Segmento": {
+                "description": "",
+                "required": [
+                    "tipo",
+                    "numero",
+                    "horaInicio",
+                    "duracao"
+                ],
+                "type": "object",
+                "properties": {
+                    "tipo": {
+                        "description": "Tipo de Segmento",
+                        "enum": [
+                            "IP",
+                            "PT",
+                            "PD"
+                        ],
+                        "type": "string"
+                    },
+                    "numero": {
+                        "description": "Numero do Segmento",
+                        "type": "number"
+                    },
+                    "horaInicio": {
+                        "description": "Hora de Inicio do Segmento. Formato: hh24:mm:ss",
+                        "type": "string"
+                    },
+                    "duracao": {
+                        "description": "Duracao do Segmento. Formato: hh:mm:ss",
+                        "type": "string"
+                    },
+                    "apresenta": {
+                        "description": "Nome do segmento",
+                        "type": "string"
+                    }
+                }
+            },
+            "Grade": {
+                "description": "Propriedades de uma grade (Grade com Breaks)",
+                "required": [
+                    "data",
+                    "programas",
+                    "emissora"
+                ],
+                "type": "object",
+                "properties": {
+                    "emissora": {
+                        "$ref": "#/components/schemas/Emissora",
+                        "description": "Informações da emissora"
+                    },
+                    "data": {
+                        "format": "date",
+                        "description": "Data da grade",
+                        "type": "string"
+                    },
+                    "programas": {
+                        "description": "Lista de programas",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Programa"
+                        }
+                    }
+                },
+                "example": {
+                    "emissora": {
+                        "sigla": "1"
+                    },
+                    "data": "2019-09-28",
+                    "programas": [
+                        {
+                            "id": "13560",
+                            "nome": "Novela III",
+                            "idSlot": "17922166",
+                            "nomeTitulo": "Miffy&apos;s Adventures Big And Small 27",
+                            "reprise": false,
+                            "aoVivo": true,
+                            "categorias": [
+                                "Curta"
+                            ],
+                            "duracao": "00:05:00",
+                            "horaInicio": "07:00:00",
+                            "segmentos": [
+                                {
+                                    "tipo": "PD",
+                                    "numero": 1,
+                                    "horaInicio": "07:00:05",
+                                    "duracao": "00:06:56"
+                                },
+                                {
+                                    "tipo": "PT",
+                                    "numero": 1,
+                                    "horaInicio": "07:00:05",
+                                    "duracao": "00:02:00",
+                                    "nome": "17922166 - 01"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            "Emissora": {
+                "description": "Propriedades da emissora",
+                "required": [
+                    "sigla"
+                ],
+                "type": "object",
+                "properties": {
+                    "sigla": {
+                        "description": "Sigla da emissora - Identificador do Canal",
+                        "type": "string"
+                    }
+                }
+            },
+            "Programa": {
+                "description": "",
+                "required": [
+                    "segmentos",
+                    "horaInicio",
+                    "idSlot",
+                    "duracao",
+                    "reprise",
+                    "aoVivo",
+                    "nomeTitulo"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "format": "int64",
+                        "description": "Identificador do programa",
+                        "type": "integer"
+                    },
+                    "nome": {
+                        "description": "Nome do programa",
+                        "type": "string"
+                    },
+                    "idSlot": {
+                        "format": "int64",
+                        "description": "Identificador do slot",
+                        "type": "integer"
+                    },
+                    "nomeTitulo": {
+                        "description": "Titulo",
+                        "type": "string"
+                    },
+                    "horaInicio": {
+                        "description": "Hora de inicio do programa. Formato: hh24:mm:ss",
+                        "type": "string"
+                    },
+                    "reprise": {
+                        "description": "Indica se o programa e reprise (true) ou não (false)",
+                        "type": "boolean"
+                    },
+                    "aoVivo": {
+                        "description": "Indica se o programa e ao vivo (true) ou nao (false)",
+                        "type": "boolean"
+                    },
+                    "categorias": {
+                        "description": "Listagem de categorias",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "duracao": {
+                        "description": "Duracao. Formato: hh:mm:ss",
+                        "type": "string"
+                    },
+                    "segmentos": {
+                        "description": "Lista de Segmentos",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Segmento"
+                        }
+                    }
+                }
+            },
+            "Info": {
+                "description": "",
+                "required": [
+                    "code",
+                    "mensagemUsuario"
+                ],
+                "type": "object",
+                "properties": {
+                    "codigo": {
+                        "format": "int32",
+                        "description": "Código de retorno",
+                        "type": "integer"
+                    },
+                    "mensagemUsuario": {
+                        "description": "Mensagem de erro amigavel a ser exibida ao usuário final se necessário",
+                        "type": "string"
+                    },
+                    "mensagemInterna": {
+                        "description": "Mensagem de erro não amigavel contendo detalhes de implementação",
+                        "type": "string"
+                    },
+                    "detalhe": {
+                        "description": "Objeto genérico com detalhes do erro para auxiliar no detalhamento",
+                        "type": "object"
+                    },
+                    "info": {
+                        "description": "Detalhamento do erro ou referencia a documentação caso exista.",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "COMERCIAL",
+            "description": ""
+        }
+    ]
+}
