@@ -1,0 +1,397 @@
+---
+openapi: 3.0.2
+info:
+  title: PIG - TVG - Comercialização API - Slots e Breaks
+  version: 1.0.0
+  description: Endpoint para atender as necessidades de recebimento de grade com breaks
+    do projeto integração de grades.
+paths:
+  /grades:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Grade'
+            examples:
+              SPTV:
+                value:
+                  emissora:
+                    sigla: "3"
+                  data: 2019-05-10
+                  slots:
+                  - id: 19489159
+                    reprise: false
+                    aoVivo: false
+                    duracao: 00:05:00
+                    horaInicio: 07:45:00
+                    titulo:
+                      nome: Gs - Conheça Amandinha - A Melhor Jogadora De Futsal Do
+                        Mundo -20012019
+                    programa:
+                      id: 13667
+                      nome: Galeria SporTV
+                    segmentos:
+                    - tipo: IP
+                      horaInicio: 07:41:59
+                      duracao: 00:02:59
+                      apresenta: 19489159 - 01
+                    - tipo: PD
+                      numero: 1
+                      horaInicio: 07:44:59
+                      duracao: 00:05:44
+                    - tipo: PT
+                      numero: 2
+                      horaInicio: 07:50:44
+                      duracao: 00:00:00
+                  - id: 19463821
+                    reprise: false
+                    aoVivo: false
+                    duracao: 00:55:00
+                    horaInicio: 07:50:00
+                    titulo:
+                      nome: Libertadores - Peñarol-URU X Flamengo - 08052019
+                    programa:
+                      id: 14257
+                      nome: Copa Conmebol Libertadores
+                    segmentos:
+                    - tipo: IT
+                      horaInicio: 07:50:44
+                      duracao: 00:04:10
+                      apresenta: 19463821 - 01
+                    - tipo: PD
+                      numero: 1
+                      horaInicio: 07:50:00
+                      duracao: 00:19:15
+                    - tipo: PT
+                      numero: 1
+                      horaInicio: 08:09:15
+                      duracao: 00:02:59
+                      apresenta: 19463821 - 02
+                    - tipo: PD
+                      numero: 2
+                      horaInicio: 08:12:15
+                      duracao: 00:32:52
+                    - tipo: PT
+                      numero: 2
+                      horaInicio: 08:45:08
+                      duracao: 00:00:00
+                      apresenta: 19463821 - 03
+                  - id: 19286253
+                    reprise: false
+                    aoVivo: true
+                    duracao: 01:00:00
+                    horaInicio: 08:45:00
+                    titulo:
+                      nome: SporTV News - 10052019
+                    programa:
+                      id: 13575
+                      nome: Sportvnews
+                    segmentos:
+                    - tipo: IP
+                      horaInicio: 08:45:18
+                      duracao: 00:00:30
+                      apresenta: 19286253 - 01
+                    - tipo: PD
+                      numero: 1
+                      horaInicio: 08:44:59
+                      duracao: 00:02:00
+                    - tipo: PT
+                      numero: 1
+                      horaInicio: 08:47:59
+                      duracao: 00:02:59
+                      apresenta: 19286253 - 02
+                    - tipo: PD
+                      numero: 2
+                      horaInicio: 08:50:59
+                      duracao: 00:50:50
+                    - tipo: PD
+                      numero: 3
+                      horaInicio: 09:41:49
+                      duracao: 00:02:00
+                    - tipo: PT
+                      numero: 3
+                      horaInicio: 09:43:49
+                      duracao: 00:00:00
+                      apresenta: 19286253 - 03
+        required: true
+      tags:
+      - COMERCIAL
+      responses:
+        204:
+          description: O servidor completou a solicitação, mas não é necessária nenhuma
+            mensagem de retorno.
+        400:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Info'
+          description: A requisição foi mal formada e precisa ser reescrita
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Info'
+          description: O acesso a URL solicitada só poderá ser realizado após autenticação
+        405:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Info'
+          description: O método HTTP utilizado não é permitido para o recurso
+        500:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Info'
+          description: O servidor não pode processar a requisição devido a um erro
+            inesperado
+      summary: Envio da grade com breaks
+      description: Envio da grade com breaks
+components:
+  schemas:
+    Segmento:
+      description: ""
+      required:
+      - tipo
+      - numero
+      - horaInicio
+      - duracao
+      type: object
+      properties:
+        tipo:
+          description: Tipo de Segmento
+          enum:
+          - IP
+          - PT
+          - PD
+          type: string
+        numero:
+          description: Numero do Segmento
+          type: number
+        horaInicio:
+          description: 'Hora de Inicio do Segmento. Formato: hh24:mm:ss'
+          type: string
+        duracao:
+          description: 'Duracao do Segmento. Formato: hh:mm:ss'
+          type: string
+        apresenta:
+          description: Nome do segmento
+          type: string
+    Emissora:
+      description: Propriedades da emissora
+      required:
+      - sigla
+      type: object
+      properties:
+        sigla:
+          description: Sigla da emissora - Identificador do Canal
+          type: string
+    Info:
+      description: ""
+      required:
+      - code
+      - mensagemUsuario
+      type: object
+      properties:
+        codigo:
+          format: int32
+          description: Código de retorno
+          type: integer
+        mensagemUsuario:
+          description: Mensagem de erro amigavel a ser exibida ao usuário final se
+            necessário
+          type: string
+        mensagemInterna:
+          description: Mensagem de erro não amigavel contendo detalhes de implementação
+          type: string
+        detalhe:
+          description: Objeto genérico com detalhes do erro para auxiliar no detalhamento
+          type: object
+        info:
+          description: Detalhamento do erro ou referencia a documentação caso exista.
+          type: string
+    Grade:
+      description: Propriedades de uma grade (Grade com Breaks)
+      required:
+      - data
+      - programas
+      - emissora
+      type: object
+      properties:
+        emissora:
+          $ref: '#/components/schemas/Emissora'
+          description: Informações da emissora
+        data:
+          format: date
+          description: Data da grade
+          type: string
+        slots:
+          description: Lista de slots
+          type: array
+          items:
+            $ref: '#/components/schemas/Slot'
+      example:
+        emissora:
+          sigla: "3"
+        data: 2019-05-10
+        slots:
+        - id: 19489159
+          reprise: false
+          aoVivo: false
+          duracao: 00:05:00
+          horaInicio: 07:45:00
+          titulo:
+            nome: Gs - Conheça Amandinha - A Melhor Jogadora De Futsal Do Mundo -20012019
+          programa:
+            id: 13667
+            nome: Galeria SporTV
+          segmentos:
+          - tipo: IP
+            horaInicio: 07:41:59
+            duracao: 00:02:59
+            apresenta: 19489159 - 01
+          - tipo: PD
+            numero: 1
+            horaInicio: 07:44:59
+            duracao: 00:05:44
+          - tipo: PT
+            numero: 2
+            horaInicio: 07:50:44
+            duracao: 00:00:00
+        - id: 19463821
+          reprise: false
+          aoVivo: false
+          duracao: 00:55:00
+          horaInicio: 07:50:00
+          titulo:
+            nome: Libertadores - Peñarol-URU X Flamengo - 08052019
+          programa:
+            id: 14257
+            nome: Copa Conmebol Libertadores
+          segmentos:
+          - tipo: IT
+            horaInicio: 07:50:44
+            duracao: 00:04:10
+            apresenta: 19463821 - 01
+          - tipo: PD
+            numero: 1
+            horaInicio: 07:50:00
+            duracao: 00:19:15
+          - tipo: PT
+            numero: 1
+            horaInicio: 08:09:15
+            duracao: 00:02:59
+            apresenta: 19463821 - 02
+          - tipo: PD
+            numero: 2
+            horaInicio: 08:12:15
+            duracao: 00:32:52
+          - tipo: PT
+            numero: 2
+            horaInicio: 08:45:08
+            duracao: 00:00:00
+            apresenta: 19463821 - 03
+        - id: 19286253
+          reprise: false
+          aoVivo: true
+          duracao: 01:00:00
+          horaInicio: 08:45:00
+          titulo:
+            nome: SporTV News - 10052019
+          programa:
+            id: 13575
+            nome: Sportvnews
+          segmentos:
+          - tipo: IP
+            horaInicio: 08:45:18
+            duracao: 00:00:30
+            apresenta: 19286253 - 01
+          - tipo: PD
+            numero: 1
+            horaInicio: 08:44:59
+            duracao: 00:02:00
+          - tipo: PT
+            numero: 1
+            horaInicio: 08:47:59
+            duracao: 00:02:59
+            apresenta: 19286253 - 02
+          - tipo: PD
+            numero: 2
+            horaInicio: 08:50:59
+            duracao: 00:50:50
+          - tipo: PD
+            numero: 3
+            horaInicio: 09:41:49
+            duracao: 00:02:00
+          - tipo: PT
+            numero: 3
+            horaInicio: 09:43:49
+            duracao: 00:00:00
+            apresenta: 19286253 - 03
+    Titulo:
+      description: Título de um programa
+      required:
+      - nome
+      type: object
+      properties:
+        nome:
+          description: Nome do título
+          type: string
+    Programa:
+      description: ""
+      required:
+      - id
+      - nome
+      type: object
+      properties:
+        id:
+          format: int64
+          description: Identificador do programa
+          type: integer
+        nome:
+          description: Nome do programa
+          type: string
+    Slot:
+      description: Espaço reservado para um programa
+      required:
+      - segmentos
+      - id
+      - horaInicio
+      - duracao
+      - reprise
+      - aoVivo
+      type: object
+      properties:
+        id:
+          description: Identificador do slot
+          type: integer
+        reprise:
+          description: Indica se o programa e reprise (true) ou não (false)
+          type: boolean
+        aoVivo:
+          description: Indica se o programa e ao vivo (true) ou nao (false)
+          type: boolean
+        categoria:
+          description: Categoria
+          type: string
+        duracao:
+          description: Duração do slot
+          type: string
+        horaInicio:
+          description: Horário de início do agendamento
+          type: string
+        titulo:
+          $ref: '#/components/schemas/Titulo'
+          description: título do programa agendado
+        programa:
+          $ref: '#/components/schemas/Programa'
+          description: similar ao event profile, contém as informações de programa
+        segmentos:
+          description: Lista de Segmentos
+          type: array
+          items:
+            $ref: '#/components/schemas/Segmento'
+tags:
+- name: COMERCIAL
+  description: ""
